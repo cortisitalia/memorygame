@@ -39,7 +39,7 @@
         header {
             text-align: center;
             margin-top: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             width: 100%;
             max-width: 600px;
         }
@@ -50,7 +50,7 @@
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.2rem;
             color: #fff;
             text-shadow: 
                 0 0 5px #fff,
@@ -70,6 +70,41 @@
             text-shadow: 0 0 10px var(--neon-cyan);
         }
 
+        .difficulty-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-diff {
+            background: rgba(21, 21, 40, 0.8);
+            color: #aaa;
+            border: 1px solid rgba(155, 81, 224, 0.3);
+            padding: 0.4rem 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-diff.active {
+            background: rgba(155, 81, 224, 0.2);
+            color: #fff;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 10px rgba(155, 81, 224, 0.5);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .btn-diff:hover:not(.active) {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
         .stats-container {
             display: flex;
             justify-content: space-between;
@@ -80,6 +115,7 @@
             padding: 1rem 1.5rem;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
             backdrop-filter: blur(5px);
+            margin-bottom: 1.5rem;
         }
 
         .stat {
@@ -120,17 +156,16 @@
 
         .game-board {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            gap: 10px;
             width: 100%;
-            max-width: 500px;
-            perspective: 1000px; /* Required for 3D flip effect */
+            perspective: 1000px;
             margin-bottom: 2rem;
+            transition: max-width 0.3s;
         }
 
         .card {
             width: 100%;
-            aspect-ratio: 1; /* Keeps cards perfectly square */
+            aspect-ratio: 1;
             cursor: pointer;
             position: relative;
         }
@@ -144,7 +179,6 @@
             transform-style: preserve-3d;
         }
 
-        /* The flip action */
         .card.flipped .card-inner,
         .card.matched .card-inner {
             transform: rotateY(180deg);
@@ -156,11 +190,6 @@
             height: 100%;
             backface-visibility: hidden;
             border-radius: 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
 
@@ -169,6 +198,9 @@
             border: 2px solid rgba(155, 81, 224, 0.5);
             box-shadow: 0 0 10px rgba(155, 81, 224, 0.2);
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .card-front::after {
@@ -177,7 +209,6 @@
             font-size: 2.5rem;
             font-weight: 900;
             color: rgba(255, 255, 255, 0.1);
-            position: absolute;
         }
 
         .card:hover .card-front {
@@ -186,33 +217,26 @@
         }
 
         .card-back {
-            background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%);
+            background: #000;
             border: 2px solid var(--neon-cyan);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
             transform: rotateY(180deg);
-            color: white;
+            padding: 0;
+            overflow: hidden;
         }
 
         .card.matched .card-back {
-            background: linear-gradient(135deg, #1f0b2e 0%, #ff2a85 100%);
             border-color: var(--neon-pink);
             box-shadow: 0 0 20px rgba(255, 42, 133, 0.6);
             animation: match-pulse 1s ease-out;
         }
 
-        .card-emoji {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
-            margin-bottom: 0.2rem;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-        }
-
-        .card-text {
-            font-size: clamp(0.6rem, 2.5vw, 0.9rem);
-            font-weight: 700;
-            line-height: 1.1;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            word-wrap: break-word;
-            text-align: center;
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            pointer-events: none;
         }
 
         .modal-overlay {
@@ -290,9 +314,10 @@
 
         @media (max-width: 480px) {
             h1 { font-size: 2.2rem; }
-            .game-board { gap: 8px; }
-            .card-front::after { font-size: 2rem; }
-            .stats-container { padding: 0.8rem; }
+            .game-board { gap: 6px; }
+            .game-board[data-cols="6"] { grid-template-columns: repeat(4, 1fr) !important; }
+            .card-front::after { font-size: 1.5rem; }
+            .stats-container { padding: 0.8rem; flex-direction: column; gap: 10px; }
             .stat { font-size: 1rem; }
             .stat-value { font-size: 1.2rem; }
         }
@@ -303,27 +328,27 @@
     <header>
         <h1>CORTIS</h1>
         <div class="subtitle">Memory Game</div>
+
+        <div class="difficulty-tabs">
+            <button class="btn-diff active" onclick="setDifficulty(8, 4, event)">Facile</button>
+            <button class="btn-diff" onclick="setDifficulty(10, 4, event)">Medio</button>
+            <button class="btn-diff" onclick="setDifficulty(12, 4, event)">Difficile</button>
+            <button class="btn-diff" onclick="setDifficulty(18, 6, event)">Estremo</button>
+        </div>
         
         <div class="stats-container">
-            <div class="stat">
-                Mosse: <span id="moves" class="stat-value">0</span>
-            </div>
-            <div class="stat">
-                Tempo: <span id="timer" class="stat-value">00:00</span>
-            </div>
+            <div class="stat">Mosse: <span id="moves" class="stat-value">0</span></div>
+            <div class="stat">Tempo: <span id="timer" class="stat-value">00:00</span></div>
             <button class="btn-restart" id="restart-btn" onclick="initGame()">Riavvia</button>
         </div>
     </header>
 
-    <div class="game-board" id="game-board">
-        <!-- Cards will be generated here by JS -->
-    </div>
+    <div class="game-board" id="game-board"></div>
 
-    <!-- Victory Modal -->
     <div class="modal-overlay" id="victory-modal">
         <div class="modal-content">
             <div class="modal-title">Sei un vero COER! 💖</div>
-            <div class="modal-text">Hai completato il gioco e dimostrato il tuo amore per i CORTIS!</div>
+            <div class="modal-text">Hai completato il livello, che memoria!</div>
             <div class="modal-stats">
                 <div class="stat">Mosse: <span id="final-moves" class="stat-value">0</span></div>
                 <div class="stat">Tempo: <span id="final-timer" class="stat-value">00:00</span></div>
@@ -333,82 +358,97 @@
     </div>
 
     <script>
-        // Game data: Pairs of concepts related to CORTIS
-        const cardData = [
-            { name: "Keonho", emoji: "🧑‍🎤" },
-            { name: "Martin", emoji: "🕺" },
-            { name: "COER (Fandom)", emoji: "💖" },
-            { name: "Lullaby MV", emoji: "🌙" },
-            { name: "Joyride", emoji: "🚗" },
-            { name: "GREENGREEN", emoji: "🌿" },
-            { name: "GO!", emoji: "🏁" },
-            { name: "Color Outside<br>The Lines", emoji: "🎨" }
+        const allImages = [
+            "https://i.pinimg.com/736x/11/36/d0/1136d03afffdea35190e69de74f53845.jpg",
+            "https://i.pinimg.com/736x/b5/79/9f/b5799f674d092bf71bb16894796b9d65.jpg",
+            "https://i.pinimg.com/736x/2c/2f/21/2c2f210b38793fd82c634ba011b55d34.jpg",
+            "https://i.pinimg.com/736x/f4/1f/38/f41f38c15c5802f293569ffa163e9b37.jpg",
+            "https://i.pinimg.com/736x/32/7c/5e/327c5e0ed520842c5be165873cd6c532.jpg",
+            "https://i.pinimg.com/736x/80/d4/0d/80d40d1d000bf4e323952331856842c4.jpg",
+            "https://i.pinimg.com/1200x/68/b2/c3/68b2c3f7a3f515fe1bf68bf4f52433bf.jpg",
+            "https://i.pinimg.com/736x/d5/46/e6/d546e656a2b3350c6b71c06d86bc018f.jpg",
+            "https://i.pinimg.com/736x/9d/c1/11/9dc11196f5bfd5bb6ad1b2bd1357c93e.jpg",
+            "https://i.pinimg.com/736x/75/fd/d2/75fdd29a0f05ef96b349a03fc30640d1.jpg",
+            "https://i.pinimg.com/736x/0d/b8/66/0db86626e52d08ab290079f6f7c205db.jpg",
+            "https://i.pinimg.com/736x/ae/8b/3a/ae8b3a06f16cf53137d35d29714829f2.jpg",
+            "https://i.pinimg.com/736x/f4/c1/db/f4c1dbe2d3034db373d00822d98b5afd.jpg",
+            "https://i.pinimg.com/736x/f5/7f/5d/f57f5d92b41fe1d1a535201464318cac.jpg",
+            "https://i.pinimg.com/736x/6f/ed/5a/6fed5a22c2e18fdbccd534eeff48aec0.jpg",
+            "https://i.pinimg.com/736x/77/54/f4/7754f41929abff52a781d3035adb6605.jpg",
+            "https://i.pinimg.com/736x/18/1e/a4/181ea4c86ec554d3e12969e8cb68cf5c.jpg",
+            "https://i.pinimg.com/736x/da/c0/7b/dac07b9f9e897e8cb2963035411f853e.jpg",
+            "https://i.pinimg.com/736x/f4/49/b8/f449b8fec461342982435432ca2c8189.jpg",
+            "https://i.pinimg.com/736x/85/88/f6/8588f6d6b10a251ce1881d3f90d71b27.jpg",
+            "https://i.pinimg.com/736x/7d/ac/eb/7daceb10cef84cd5b4d16041f334eefe.jpg",
+            "https://i.pinimg.com/736x/f0/95/09/f09509db74742cd59726bc62e4d1defd.jpg",
+            "https://i.pinimg.com/736x/93/e8/4e/93e84ec6bd408e9b22272f87e5b8aada.jpg",
+            "https://i.pinimg.com/1200x/3c/16/95/3c16959b92796d583ea520c2b60216c7.jpg",
+            "https://i.pinimg.com/736x/cf/4b/70/cf4b705fe4fcc7b83acbc9c147085f8e.jpg"
         ];
 
-        // State variables
-        let cards = [];
+        let currentPairs = 8;
+        let currentCols = 4;
         let hasFlippedCard = false;
         let lockBoard = false;
         let firstCard, secondCard;
-        let moves = 0;
-        let matches = 0;
-        
-        // Timer variables
-        let timerInterval;
-        let secondsElapsed = 0;
-        let gameStarted = false;
+        let moves = 0, matches = 0;
+        let timerInterval, secondsElapsed = 0, gameStarted = false;
 
         const boardElement = document.getElementById('game-board');
         const movesElement = document.getElementById('moves');
         const timerElement = document.getElementById('timer');
         const modalElement = document.getElementById('victory-modal');
 
+        function setDifficulty(pairs, cols, event) {
+            currentPairs = pairs;
+            currentCols = cols;
+            
+            document.querySelectorAll('.btn-diff').forEach(btn => btn.classList.remove('active'));
+            if(event) event.target.classList.add('active');
+            
+            initGame();
+        }
+
         function initGame() {
-            // Reset state
             boardElement.innerHTML = '';
-            hasFlippedCard = false;
-            lockBoard = false;
-            firstCard = null;
-            secondCard = null;
-            moves = 0;
-            matches = 0;
+            resetBoard();
+            moves = 0; matches = 0;
             movesElement.innerText = moves;
             
-            // Reset Timer
             stopTimer();
             secondsElapsed = 0;
             gameStarted = false;
             timerElement.innerText = "00:00";
-            
-            // Hide modal
             modalElement.classList.remove('active');
 
-            // Duplicate array to create pairs and shuffle
-            cards = [...cardData, ...cardData];
-            shuffle(cards);
+            let shuffledDb = [...allImages];
+            shuffle(shuffledDb);
+            let selectedImages = shuffledDb.slice(0, currentPairs);
+            let deck = [...selectedImages, ...selectedImages];
+            shuffle(deck);
 
-            // Create DOM elements
-            cards.forEach(card => {
+            boardElement.style.gridTemplateColumns = `repeat(${currentCols}, 1fr)`;
+            boardElement.style.maxWidth = currentCols === 6 ? '700px' : '500px';
+            boardElement.dataset.cols = currentCols; 
+
+            deck.forEach(imgUrl => {
                 const cardEl = document.createElement('div');
                 cardEl.classList.add('card');
-                cardEl.dataset.name = card.name; // Use name for matching
+                cardEl.dataset.name = imgUrl; 
 
                 cardEl.innerHTML = `
                     <div class="card-inner">
                         <div class="card-front"></div>
                         <div class="card-back">
-                            <div class="card-emoji">${card.emoji}</div>
-                            <div class="card-text">${card.name}</div>
+                            <img src="${imgUrl}" class="card-img" alt="Cortis">
                         </div>
                     </div>
                 `;
-
                 cardEl.addEventListener('click', flipCard);
                 boardElement.appendChild(cardEl);
             });
         }
 
-        // Fisher-Yates Shuffle Algorithm
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -429,70 +469,41 @@
         }
 
         function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
         }
 
         function flipCard() {
-            // Prevent flipping if board is locked or clicking the same card
-            if (lockBoard) return;
-            if (this === firstCard) return;
-
-            // Start timer on first interaction
+            if (lockBoard || this === firstCard) return;
             startTimer();
-
             this.classList.add('flipped');
 
             if (!hasFlippedCard) {
-                // First click
                 hasFlippedCard = true;
                 firstCard = this;
                 return;
             }
 
-            // Second click
             secondCard = this;
-            updateMoves();
-            checkForMatch();
-        }
-
-        function updateMoves() {
             moves++;
             movesElement.innerText = moves;
-        }
-
-        function checkForMatch() {
-            // Do cards match?
-            let isMatch = firstCard.dataset.name === secondCard.dataset.name;
-
-            isMatch ? disableCards() : unflipCards();
+            
+            firstCard.dataset.name === secondCard.dataset.name ? disableCards() : unflipCards();
         }
 
         function disableCards() {
-            // Match found
             firstCard.removeEventListener('click', flipCard);
             secondCard.removeEventListener('click', flipCard);
-            
-            // Add matched styling
             firstCard.classList.add('matched');
             secondCard.classList.add('matched');
-
             matches++;
-            
-            // Check for win
-            if (matches === cardData.length) {
-                setTimeout(showVictory, 500);
-            }
 
+            if (matches === currentPairs) setTimeout(showVictory, 500);
             resetBoard();
         }
 
         function unflipCards() {
-            // No match found
             lockBoard = true;
-
             setTimeout(() => {
                 firstCard.classList.remove('flipped');
                 secondCard.classList.remove('flipped');
@@ -501,8 +512,7 @@
         }
 
         function resetBoard() {
-            [hasFlippedCard, lockBoard] = [false, false];
-            [firstCard, secondCard] = [null, null];
+            [hasFlippedCard, lockBoard, firstCard, secondCard] = [false, false, null, null];
         }
 
         function showVictory() {
@@ -512,7 +522,6 @@
             modalElement.classList.add('active');
         }
 
-        // Initialize the game on load
         window.onload = initGame;
     </script>
 </body>
