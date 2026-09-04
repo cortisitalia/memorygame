@@ -7,10 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Palette Beige & Verde */
             --bg-beige: #F5F5DC;
-            --green-main: #87b090; /* Il verde che hai scelto */
-            --green-dark: #2c5234; /* Verde scuro per i testi */
+            --green-main: #87b090;
+            --green-dark: #2c5234;
             --green-light: #b4d3bb;
             --text-dark: #1a3320;
             --panel-bg: rgba(255, 255, 255, 0.6);
@@ -24,10 +23,8 @@
 
         body {
             background-color: var(--bg-beige);
-            /* Pattern a pois carino e delicato */
             background-image: radial-gradient(var(--green-main) 1.5px, transparent 1.5px);
             background-size: 25px 25px;
-            
             color: var(--text-dark);
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
@@ -318,37 +315,42 @@
             100% { transform: rotateY(180deg) scale(1); }
         }
 
-        /* --- OTTIMIZZAZIONE SUPER PER TELEFONO --- */
+        /* --- OTTIMIZZAZIONE ESTREMA PER SPAZIO TELEFONO --- */
         @media (max-width: 480px) {
-            body { padding: 0.5rem; }
-            header { margin-top: 0.2rem; margin-bottom: 0.5rem; padding: 1rem; }
-            h1 { font-size: 2.5rem; margin-bottom: 0; }
-            .subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
+            body { padding: 0.2rem; }
+            header { margin-top: 0.2rem; margin-bottom: 0.2rem; padding: 0.8rem; }
+            h1 { font-size: 1.8rem; margin-bottom: 0; line-height: 1; }
+            .subtitle { font-size: 0.7rem; margin-bottom: 0.6rem; letter-spacing: 2px; }
             
-            /* Tasti difficoltà compatti */
-            .difficulty-tabs { gap: 0.3rem; margin-bottom: 0.8rem; }
-            .btn-diff { padding: 0.3rem 0.6rem; font-size: 0.85rem; border-radius: 15px; }
+            .difficulty-tabs { gap: 0.2rem; margin-bottom: 0.5rem; }
+            .btn-diff { padding: 0.2rem 0.5rem; font-size: 0.75rem; border-radius: 12px; }
             
-            /* Statistiche su una riga compatta */
             .stats-container { 
-                padding: 0.5rem; 
+                padding: 0.4rem; 
                 flex-direction: row; 
                 flex-wrap: wrap; 
                 justify-content: center; 
-                gap: 10px 20px; 
-                margin-bottom: 1rem;
+                gap: 8px 15px; 
+                margin-bottom: 0.5rem;
             }
-            .stat { font-size: 0.9rem; }
-            .stat-value { font-size: 1.2rem; }
-            .btn-restart { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
+            .stat { font-size: 0.8rem; }
+            .stat-value { font-size: 1rem; }
+            .btn-restart { padding: 0.2rem 0.6rem; font-size: 0.8rem; }
             
-            /* Griglia più fitta e margini ridotti per non fare scroll */
-            .game-board { gap: 5px; margin-bottom: 1rem; }
-            .game-board[data-cols="6"] { grid-template-columns: repeat(4, 1fr) !important; gap: 4px; }
-            .card-front, .card-back { border-width: 2px; border-radius: 8px; }
-            .card-front::after { font-size: 1.5rem; }
+            /* Griglia ultra-compatta */
+            .game-board { gap: 4px; margin-bottom: 0.5rem; }
             
-            footer { padding: 1rem 0 0.5rem 0; font-size: 0.8rem; }
+            /* FORZA LE 6 COLONNE PER IL LIVELLO ESTREMO SU MOBILE */
+            .game-board[data-cols="6"] { grid-template-columns: repeat(6, 1fr) !important; gap: 3px; }
+            
+            .card-front, .card-back { border-width: 1px; border-radius: 6px; padding: 2px; }
+            .card-img { border-radius: 4px; }
+            
+            /* Adatta la "C" al formato piccolino del livello estremo */
+            .card-front::after { font-size: 1.1rem; }
+            .game-board:not([data-cols="6"]) .card-front::after { font-size: 1.8rem; }
+            
+            footer { padding: 0.5rem 0; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -374,7 +376,6 @@
 
     <div class="game-board" id="game-board"></div>
 
-    <!-- Aggiunto anche il footer @cortisitalia che mi avevi chiesto poco fa! -->
     <footer>
         made by <span>@cortisitalia</span>
     </footer>
