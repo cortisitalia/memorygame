@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CORTIS Memory Game</title>
+    <title>CORTIS Memory Game - GREENGREEN</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0a16;
-            --bg-panel: #151528;
-            --neon-pink: #ff2a85;
-            --neon-purple: #9b51e0;
-            --neon-cyan: #00f0ff;
-            --text-main: #f0f0f0;
+            /* Palette Beige & Verde */
+            --bg-beige: #F5F5DC;
+            --green-main: #87b090; /* Il tuo verde */
+            --green-dark: #2c5234; /* Verde scuro per contrasto */
+            --green-light: #b4d3bb;
+            --text-dark: #1a3320;
+            --panel-bg: rgba(255, 255, 255, 0.6);
         }
 
         * {
@@ -22,11 +23,12 @@
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(155, 81, 224, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 85% 30%, rgba(255, 42, 133, 0.15) 0%, transparent 50%);
-            color: var(--text-main);
+            background-color: var(--bg-beige);
+            /* Sottile pattern CSS a pois per texture */
+            background-image: radial-gradient(var(--green-main) 1px, transparent 1px);
+            background-size: 20px 20px;
+            
+            color: var(--text-dark);
             font-family: 'Outfit', sans-serif;
             min-height: 100vh;
             display: flex;
@@ -42,32 +44,31 @@
             margin-bottom: 1rem;
             width: 100%;
             max-width: 600px;
+            background: var(--panel-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid rgba(135, 176, 144, 0.4);
+            box-shadow: 0 4px 15px rgba(44, 82, 52, 0.05);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
             font-family: 'Rajdhani', sans-serif;
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0.2rem;
-            color: #fff;
-            text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px var(--neon-pink),
-                0 0 40px var(--neon-pink),
-                0 0 80px var(--neon-purple);
-            animation: pulse-glow 2s infinite alternate;
+            margin-bottom: 0;
+            color: var(--green-dark);
         }
 
         .subtitle {
             font-size: 1rem;
-            color: var(--neon-cyan);
+            color: var(--green-main);
             letter-spacing: 4px;
             text-transform: uppercase;
             margin-bottom: 1.5rem;
-            text-shadow: 0 0 10px var(--neon-cyan);
+            font-weight: 700;
         }
 
         .difficulty-tabs {
@@ -79,65 +80,63 @@
         }
 
         .btn-diff {
-            background: rgba(21, 21, 40, 0.8);
-            color: #aaa;
-            border: 1px solid rgba(155, 81, 224, 0.3);
+            background: #fff;
+            color: var(--green-main);
+            border: 2px solid var(--green-light);
             padding: 0.4rem 1rem;
             font-family: 'Rajdhani', sans-serif;
             font-size: 1rem;
             font-weight: 700;
             text-transform: uppercase;
-            border-radius: 8px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .btn-diff.active {
-            background: rgba(155, 81, 224, 0.2);
+            background: var(--green-main);
             color: #fff;
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 10px rgba(155, 81, 224, 0.5);
-            text-shadow: 0 0 5px #fff;
+            border-color: var(--green-main);
+            box-shadow: 0 4px 10px rgba(135, 176, 144, 0.4);
         }
 
         .btn-diff:hover:not(.active) {
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
+            border-color: var(--green-main);
+            background: var(--green-light);
+            color: var(--green-dark);
         }
 
         .stats-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(21, 21, 40, 0.8);
-            border: 1px solid rgba(0, 240, 255, 0.3);
+            background: #fff;
+            border: 2px solid var(--green-light);
             border-radius: 12px;
-            padding: 1rem 1.5rem;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
-            backdrop-filter: blur(5px);
-            margin-bottom: 1.5rem;
+            padding: 0.8rem 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
         .stat {
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.2rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--green-main);
         }
 
         .stat-value {
-            font-weight: 700;
             font-size: 1.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-cyan);
+            color: var(--green-dark);
         }
 
         .btn-restart {
-            background: transparent;
-            color: #fff;
-            border: 2px solid var(--neon-pink);
-            padding: 0.5rem 1.2rem;
+            background: #fff;
+            color: var(--green-dark);
+            border: 2px solid var(--green-dark);
+            padding: 0.4rem 1.2rem;
             font-family: 'Rajdhani', sans-serif;
             font-size: 1.1rem;
             font-weight: 700;
@@ -145,18 +144,17 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 42, 133, 0.3), inset 0 0 10px rgba(255, 42, 133, 0.3);
         }
 
         .btn-restart:hover {
-            background: var(--neon-pink);
-            box-shadow: 0 0 20px var(--neon-pink), inset 0 0 10px rgba(255,255,255,0.5);
-            text-shadow: 0 0 5px #fff;
+            background: var(--green-dark);
+            color: #fff;
+            box-shadow: 0 4px 10px rgba(44, 82, 52, 0.3);
         }
 
         .game-board {
             display: grid;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
             perspective: 1000px;
             margin-bottom: 2rem;
@@ -190,13 +188,12 @@
             height: 100%;
             backface-visibility: hidden;
             border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 10px rgba(44, 82, 52, 0.15);
         }
 
         .card-front {
-            background: linear-gradient(135deg, rgba(26,26,46,1) 0%, rgba(22,17,36,1) 100%);
-            border: 2px solid rgba(155, 81, 224, 0.5);
-            box-shadow: 0 0 10px rgba(155, 81, 224, 0.2);
+            background: linear-gradient(135deg, var(--green-main) 0%, var(--green-dark) 100%);
+            border: 3px solid #fff;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -206,36 +203,35 @@
         .card-front::after {
             content: 'C';
             font-family: 'Rajdhani', sans-serif;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.3);
         }
 
         .card:hover .card-front {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 15px var(--neon-purple);
+            transform: scale(1.02);
+            box-shadow: 0 8px 15px rgba(44, 82, 52, 0.3);
         }
 
         .card-back {
-            background: #000;
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            background: #fff;
+            border: 3px solid var(--green-main);
             transform: rotateY(180deg);
-            padding: 0;
+            padding: 4px;
             overflow: hidden;
         }
 
         .card.matched .card-back {
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 20px rgba(255, 42, 133, 0.6);
-            animation: match-pulse 1s ease-out;
+            border-color: var(--green-dark);
+            box-shadow: 0 0 15px rgba(135, 176, 144, 0.5);
+            animation: match-pulse 0.8s ease-out;
         }
 
         .card-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 6px;
             pointer-events: none;
         }
 
@@ -245,8 +241,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 10, 22, 0.9);
-            backdrop-filter: blur(8px);
+            background: rgba(245, 245, 220, 0.9);
+            backdrop-filter: blur(5px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -262,11 +258,11 @@
         }
 
         .modal-content {
-            background: rgba(21, 21, 40, 0.95);
+            background: #fff;
             padding: 3rem 2rem;
             border-radius: 20px;
-            border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 30px rgba(155, 81, 224, 0.5), inset 0 0 20px rgba(155, 81, 224, 0.2);
+            border: 4px solid var(--green-main);
+            box-shadow: 0 10px 30px rgba(44, 82, 52, 0.2);
             text-align: center;
             transform: translateY(50px) scale(0.9);
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -282,16 +278,16 @@
             font-family: 'Rajdhani', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
-            color: #fff;
+            color: var(--green-dark);
             text-transform: uppercase;
             margin-bottom: 1rem;
-            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
         }
 
         .modal-text {
             font-size: 1.2rem;
             margin-bottom: 2rem;
-            color: #ddd;
+            color: var(--text-dark);
+            font-weight: 700;
         }
 
         .modal-stats {
@@ -301,42 +297,52 @@
             margin-bottom: 2rem;
         }
 
-        @keyframes pulse-glow {
-            0% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink); }
-            100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 30px var(--neon-pink), 0 0 60px var(--neon-pink), 0 0 90px var(--neon-purple); }
+        footer {
+            margin-top: auto;
+            padding: 1.5rem 0 0.5rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--green-dark);
+            width: 100%;
+            font-weight: 700;
         }
 
-        /* --- OTTIMIZZAZIONE SUPER PER TELEFONO --- */
+        footer span {
+            color: var(--green-main);
+        }
+
+        @keyframes match-pulse {
+            0% { transform: rotateY(180deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.05); }
+            100% { transform: rotateY(180deg) scale(1); }
+        }
+
         @media (max-width: 480px) {
             body { padding: 0.5rem; }
-            header { margin-top: 0.2rem; margin-bottom: 0.5rem; }
-            h1 { font-size: 2rem; margin-bottom: 0; }
-            .subtitle { font-size: 0.8rem; margin-bottom: 0.8rem; }
-            
-            /* Tasti difficoltà compatti */
+            header { margin-top: 0.2rem; margin-bottom: 0.5rem; padding: 1rem; }
+            h1 { font-size: 2.5rem; }
+            .subtitle { font-size: 0.85rem; margin-bottom: 1rem; }
             .difficulty-tabs { gap: 0.3rem; margin-bottom: 0.8rem; }
-            .btn-diff { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+            .btn-diff { padding: 0.3rem 0.6rem; font-size: 0.85rem; border-radius: 15px; }
             
-            /* Statistiche su una riga compatta */
             .stats-container { 
                 padding: 0.5rem; 
                 flex-direction: row; 
                 flex-wrap: wrap; 
                 justify-content: center; 
                 gap: 10px 20px; 
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
             }
             .stat { font-size: 0.9rem; }
-            .stat-value { font-size: 1.1rem; }
+            .stat-value { font-size: 1.2rem; }
             .btn-restart { padding: 0.3rem 0.8rem; font-size: 0.9rem; }
             
-            /* Griglia più fitta e margini ridotti per non fare scroll */
-            .game-board { gap: 5px; margin-bottom: 1rem; }
-            .card-front, .card-back { border-width: 1px; border-radius: 8px; }
-            .card-img { border-radius: 6px; }
+            .game-board { gap: 8px; margin-bottom: 1rem; }
+            .game-board[data-cols="6"] { grid-template-columns: repeat(4, 1fr) !important; gap: 4px; }
+            .card-front, .card-back { border-width: 2px; border-radius: 8px; }
+            .card-front::after { font-size: 1.8rem; }
             
-            /* La "C" sul dorso della carta diventa più piccola per adattarsi al formato Estremo su mobile */
-            .card-front::after { font-size: 1.2rem; }
+            footer { padding: 1rem 0 0.5rem 0; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -344,7 +350,7 @@
 
     <header>
         <h1>CORTIS</h1>
-        <div class="subtitle">Memory Game</div>
+        <div class="subtitle">Greengreen Memory Game</div>
 
         <div class="difficulty-tabs">
             <button class="btn-diff active" onclick="setDifficulty(8, 4, event)">Facile</button>
@@ -362,9 +368,13 @@
 
     <div class="game-board" id="game-board"></div>
 
+    <footer>
+        made by <span>@cortisitalia</span>
+    </footer>
+
     <div class="modal-overlay" id="victory-modal">
         <div class="modal-content">
-            <div class="modal-title">Sei un vero COER! 💖</div>
+            <div class="modal-title">Sei un vero COER! 🌿</div>
             <div class="modal-text">Hai completato il livello, che memoria!</div>
             <div class="modal-stats">
                 <div class="stat">Mosse: <span id="final-moves" class="stat-value">0</span></div>
