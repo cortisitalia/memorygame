@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORTIS Memory Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a16;
+            --bg-panel: #151528;
+            --neon-pink: #ff2a85;
+            --neon-purple: #9b51e0;
+            --neon-cyan: #00f0ff;
+            --text-main: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(155, 81, 224, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(255, 42, 133, 0.15) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px var(--neon-pink),
+                0 0 40px var(--neon-pink),
+                0 0 80px var(--neon-purple);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--neon-cyan);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(21, 21, 40, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .stat {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .btn-restart {
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--neon-pink);
+            padding: 0.5rem 1.2rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 42, 133, 0.3), inset 0 0 10px rgba(255, 42, 133, 0.3);
+        }
+
+        .btn-restart:hover {
+            background: var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink), inset 0 0 10px rgba(255,255,255,0.5);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+            perspective: 1000px; /* Required for 3D flip effect */
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            width: 100%;
+            aspect-ratio: 1; /* Keeps cards perfectly square */
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        /* The flip action */
+        .card.flipped .card-inner,
+        .card.matched .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, rgba(26,26,46,1) 0%, rgba(22,17,36,1) 100%);
+            border: 2px solid rgba(155, 81, 224, 0.5);
+            box-shadow: 0 0 10px rgba(155, 81, 224, 0.2);
+            transition: all 0.3s;
+        }
+
+        .card-front::after {
+            content: 'C';
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            position: absolute;
+        }
+
+        .card:hover .card-front {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #2a0845 0%, #6441A5 100%);
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transform: rotateY(180deg);
+            color: white;
+        }
+
+        .card.matched .card-back {
+            background: linear-gradient(135deg, #1f0b2e 0%, #ff2a85 100%);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 42, 133, 0.6);
+            animation: match-pulse 1s ease-out;
+        }
+
+        .card-emoji {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            margin-bottom: 0.2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+        }
+
+        .card-text {
+            font-size: clamp(0.6rem, 2.5vw, 0.9rem);
+            font-weight: 700;
+            line-height: 1.1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            word-wrap: break-word;
+            text-align: center;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 22, 0.9);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: rgba(21, 21, 40, 0.95);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 30px rgba(155, 81, 224, 0.5), inset 0 0 20px rgba(155, 81, 224, 0.2);
+            text-align: center;
+            transform: translateY(50px) scale(0.9);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+        }
+
+        .modal-text {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #ddd;
+        }
+
+        .modal-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--neon-pink), 0 0 40px var(--neon-pink); }
+            100% { text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 30px var(--neon-pink), 0 0 60px var(--neon-pink), 0 0 90px var(--neon-purple); }
+        }
+
+        @keyframes match-pulse {
+            0% { transform: rotateY(180deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); }
+            100% { transform: rotateY(180deg) scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2rem; }
+            .game-board { gap: 8px; }
+            .card-front::after { font-size: 2rem; }
+            .stats-container { padding: 0.8rem; }
+            .stat { font-size: 1rem; }
+            .stat-value { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CORTIS</h1>
+        <div class="subtitle">Memory Game</div>
+        
+        <div class="stats-container">
+            <div class="stat">
+                Mosse: <span id="moves" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+                Tempo: <span id="timer" class="stat-value">00:00</span>
+            </div>
+            <button class="btn-restart" id="restart-btn" onclick="initGame()">Riavvia</button>
+        </div>
+    </header>
+
+    <div class="game-board" id="game-board">
+        <!-- Cards will be generated here by JS -->
+    </div>
+
+    <!-- Victory Modal -->
+    <div class="modal-overlay" id="victory-modal">
+        <div class="modal-content">
+            <div class="modal-title">Sei un vero COER! 💖</div>
+            <div class="modal-text">Hai completato il gioco e dimostrato il tuo amore per i CORTIS!</div>
+            <div class="modal-stats">
+                <div class="stat">Mosse: <span id="final-moves" class="stat-value">0</span></div>
+                <div class="stat">Tempo: <span id="final-timer" class="stat-value">00:00</span></div>
+            </div>
+            <button class="btn-restart" onclick="initGame()">Gioca Ancora</button>
+        </div>
+    </div>
+
+    <script>
+        // Game data: Pairs of concepts related to CORTIS
+        const cardData = [
+            { name: "Keonho", emoji: "🧑‍🎤" },
+            { name: "Martin", emoji: "🕺" },
+            { name: "COER (Fandom)", emoji: "💖" },
+            { name: "Lullaby MV", emoji: "🌙" },
+            { name: "Joyride", emoji: "🚗" },
+            { name: "GREENGREEN", emoji: "🌿" },
+            { name: "GO!", emoji: "🏁" },
+            { name: "Color Outside<br>The Lines", emoji: "🎨" }
+        ];
+
+        // State variables
+        let cards = [];
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let moves = 0;
+        let matches = 0;
+        
+        // Timer variables
+        let timerInterval;
+        let secondsElapsed = 0;
+        let gameStarted = false;
+
+        const boardElement = document.getElementById('game-board');
+        const movesElement = document.getElementById('moves');
+        const timerElement = document.getElementById('timer');
+        const modalElement = document.getElementById('victory-modal');
+
+        function initGame() {
+            // Reset state
+            boardElement.innerHTML = '';
+            hasFlippedCard = false;
+            lockBoard = false;
+            firstCard = null;
+            secondCard = null;
+            moves = 0;
+            matches = 0;
+            movesElement.innerText = moves;
+            
+            // Reset Timer
+            stopTimer();
+            secondsElapsed = 0;
+            gameStarted = false;
+            timerElement.innerText = "00:00";
+            
+            // Hide modal
+            modalElement.classList.remove('active');
+
+            // Duplicate array to create pairs and shuffle
+            cards = [...cardData, ...cardData];
+            shuffle(cards);
+
+            // Create DOM elements
+            cards.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('card');
+                cardEl.dataset.name = card.name; // Use name for matching
+
+                cardEl.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front"></div>
+                        <div class="card-back">
+                            <div class="card-emoji">${card.emoji}</div>
+                            <div class="card-text">${card.name}</div>
+                        </div>
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', flipCard);
+                boardElement.appendChild(cardEl);
+            });
+        }
+
+        // Fisher-Yates Shuffle Algorithm
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startTimer() {
+            if (!gameStarted) {
+                gameStarted = true;
+                timerInterval = setInterval(() => {
+                    secondsElapsed++;
+                    const minutes = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                    const seconds = String(secondsElapsed % 60).padStart(2, '0');
+                    timerElement.innerText = `${minutes}:${seconds}`;
+                }, 1000);
+            }
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function flipCard() {
+            // Prevent flipping if board is locked or clicking the same card
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            // Start timer on first interaction
+            startTimer();
+
+            this.classList.add('flipped');
+
+            if (!hasFlippedCard) {
+                // First click
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+
+            // Second click
+            secondCard = this;
+            updateMoves();
+            checkForMatch();
+        }
+
+        function updateMoves() {
+            moves++;
+            movesElement.innerText = moves;
+        }
+
+        function checkForMatch() {
+            // Do cards match?
+            let isMatch = firstCard.dataset.name === secondCard.dataset.name;
+
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            // Match found
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            
+            // Add matched styling
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+
+            matches++;
+            
+            // Check for win
+            if (matches === cardData.length) {
+                setTimeout(showVictory, 500);
+            }
+
+            resetBoard();
+        }
+
+        function unflipCards() {
+            // No match found
+            lockBoard = true;
+
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1000);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function showVictory() {
+            stopTimer();
+            document.getElementById('final-moves').innerText = moves;
+            document.getElementById('final-timer').innerText = timerElement.innerText;
+            modalElement.classList.add('active');
+        }
+
+        // Initialize the game on load
+        window.onload = initGame;
+    </script>
+</body>
+</html>
